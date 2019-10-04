@@ -4,9 +4,10 @@ import numpy as  np
 from tqdm import tqdm
 
 REBUILD_DATA =True
-folder=r"C:\Users\prath\Desktop\New folder (2)\Dataset\Dataset\\"
+folder=r"C:\Users\prath\Desktop\New folder (2)\Dataset\\"
 class datahandling():
-    imgsize=100
+    img1=120
+    img2=160
     bingo=folder+"bingo"
     colgate=folder+"colgate"
     cs=folder+"cs"
@@ -29,8 +30,12 @@ class datahandling():
             for f in tqdm(os.listdir(label)):
                 try:
                     path=os.path.join(label,f)
-                    img=cv2.imread(path,cv2.IMREAD_GRAYSCALE)
-                    img=cv2.resize(img,(self.imgsize,self.imgsize))
+                    img=cv2.imread(path)
+                    print(img.shape)
+                    img[:,:,1]=np.zeros([img.shape[0],img.shape[1]])
+                    
+                    img=cv2.resize(img,(self.img2,self.img1))
+                    print(img.shape)
                     self.tdata.append([np.array(img),np.eye(5)[self.labels[label]]])
                     if label==self.bingo:
                         self.bc+=1
@@ -49,7 +54,7 @@ class datahandling():
                 except exception as e:
                     pass
         np.random.shuffle(self.tdata)
-        np.save("tdata.npy",self.tdata)
+        np.save("testdata.npy",self.tdata)
         print("bingo",self.bc)
         print("colgate",self.cgc)
         print("colgatesalt",self.csc)
