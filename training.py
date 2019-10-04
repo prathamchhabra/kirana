@@ -1,6 +1,7 @@
 import os
 import cv2
 import numpy as  np
+from tqdm import tqdm
 import torch
 from torchvision import transforms as trans
 import torch.nn as nn
@@ -57,7 +58,7 @@ total_step = len(tload)
 loss_list = []
 acc_list = []
 for epoch in range(1):# while loss <x can also be used
-    for i, (images, labels) in enumerate(tload):
+    for i, (images, labels) in tqdm(enumerate(tload)):
         # Run the forward pass
         images.to(device)
         labels.to(device)
@@ -69,9 +70,9 @@ for epoch in range(1):# while loss <x can also be used
         loss_list.append(loss.item())
 
         # Backprop and perform Adam optimisation
-       # optimizer.zero_grad()
-        #loss.backward()
-        #optimizer.step()
+        optimizer.zero_grad()
+        loss.backward()
+        optimizer.step()
         # Track the accuracy
         total = labels.size(0)
         _, predicted = torch.max(outputs.data, 1)
@@ -82,7 +83,7 @@ for epoch in range(1):# while loss <x can also be used
        
 print(model.state_dict())
 torch.save(model.state_dict(),"./model.pth")
-print("hello")
+#print("hello")
 x=np.load("testdata.npy",allow_pickle=True)
 
 m=torch.stack([(torch.from_numpy(i[0]))for i in x])
