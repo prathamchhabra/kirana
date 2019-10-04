@@ -9,7 +9,7 @@ import torch.nn.functional as f
 import matplotlib.pyplot as p
 from torch.utils.data import TensorDataset as dset
 from torch.utils.data import DataLoader as dl
-classes=7
+classes=5
 batchsize=32
 mlr=0.01
 
@@ -26,9 +26,9 @@ class ConvNet(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2))
        
         self.drop_out = nn.Dropout()
-        self.fc1 = nn.Linear(25 * 25 * 64, 16807)
-        self.fc2 = nn.Linear(16807, 343)
-        self.fc3 =nn.Linear(343,7)
+        self.fc1 = nn.Linear(25 * 25 * 64, 3125)
+        self.fc2 = nn.Linear(3125, 125)
+        self.fc3 =nn.Linear(125,5)
     def forward(self, x):
         out = self.layer1(x)
         out = self.layer2(out)
@@ -56,7 +56,7 @@ optimizer = torch.optim.Adam(model.parameters(), lr=mlr)
 total_step = len(tload)
 loss_list = []
 acc_list = []
-for epoch in range(3):# while loss <x can also be used
+for epoch in range(1):# while loss <x can also be used
     for i, (images, labels) in enumerate(tload):
         # Run the forward pass
         images.to(device)
@@ -69,16 +69,16 @@ for epoch in range(3):# while loss <x can also be used
         loss_list.append(loss.item())
 
         # Backprop and perform Adam optimisation
-        optimizer.zero_grad()
-        loss.backward()
-        optimizer.step()
+       # optimizer.zero_grad()
+        #loss.backward()
+        #optimizer.step()
         # Track the accuracy
         total = labels.size(0)
         _, predicted = torch.max(outputs.data, 1)
     #print(predicted)
         correct = (predicted ==  np.argmax(labels,axis=1)).sum().item()
         acc_list.append(correct / total)
-        #print(correct/total)
+        print(correct/total)
        
 print(model.state_dict())
 torch.save(model.state_dict(),"./model.pth")

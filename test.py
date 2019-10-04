@@ -23,9 +23,9 @@ class ConvNet(nn.Module):
             nn.MaxPool2d(kernel_size=2, stride=2))
        
         self.drop_out = nn.Dropout()
-        self.fc1 = nn.Linear(25 * 25 * 64, 16807)
-        self.fc2 = nn.Linear(16807, 343)
-        self.fc3 =nn.Linear(343,7)
+        self.fc1 = nn.Linear(25 * 25 * 64, 3125)
+        self.fc2 = nn.Linear(3125, 125)
+        self.fc3 =nn.Linear(125,5)
     def forward(self, x):
         out = self.layer1(x)
         out = self.layer2(out)
@@ -35,16 +35,19 @@ class ConvNet(nn.Module):
         out = self.fc2(out)
         out=self.fc3(out)
         return out
-print("hello")
-x=np.load("testdata.npy",allow_pickle=True)
 
-m=torch.stack([(torch.from_numpy(i[0]))for i in x])
-n=torch.stack([(torch.from_numpy(i[1]))for i in x])    
-myset=dset(m,n)
+
+#
+print("hello")
+#x=np.load("testdata.npy",allow_pickle=True)
+
+#m=torch.stack([(torch.from_numpy(i[0]))for i in x])
+#n=torch.stack([(torch.from_numpy(i[1]))for i in x])    
+#myset=dset(m,n)
 #print(x.type)
-test_loader=dl(myset,batch_size=64,shuffle=True)
+#test_loader=dl(myset,batch_size=64,shuffle=True)
 model = ConvNet()
-model.load_state_dict(torch.load("./model.pth"),strict=False)['State-Dict']
+model.load_state_dict(torch.load("./model.pth"))
 print("load")
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 model.to(device)
